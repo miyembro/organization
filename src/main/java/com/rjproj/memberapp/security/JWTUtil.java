@@ -18,7 +18,6 @@ public class JWTUtil {
     @Value("${jwt.expiration}")
     private long jwtExpirationTime;
 
-
     private String token;
 
     public String extractUsername(String token) {
@@ -32,29 +31,46 @@ public class JWTUtil {
 
     public List<String> extractPermissions(String token) {
         Claims claims = extractAllClaims(token);
-        if(claims.get("permissions") != null) {
-            return (List<String>) claims.get("permissions");
-        }
-        return null;
+        Object permissions = claims.get("permissions");
 
+        // Check if the permissions claim is indeed a List
+        if (permissions instanceof List<?>) {
+            // Check if the list contains only strings
+            List<?> permissionsList = (List<?>) permissions;
+            if (permissionsList.stream().allMatch(item -> item instanceof String)) {
+                @SuppressWarnings("unchecked") // Suppress warning after ensuring type safety
+                List<String> permissionsStrings = (List<String>) permissionsList;
+                return permissionsStrings;
+            }
+        }
+        return Collections.emptyList(); // Return an empty list if no valid permissions are found
     }
 
     public UUID extractSelectedOrganizationId(String token) {
         Claims claims = extractAllClaims(token);
-        if(claims.get("selectedOrganizationId") != null) {
-            return UUID.fromString((String) claims.get("selectedOrganizationId"));
+        Object selectedOrganizationId = claims.get("selectedOrganizationId");
+        if (selectedOrganizationId instanceof String) {
+            return UUID.fromString((String) selectedOrganizationId);
         }
-        return null;
+        return null; // Handle the case where the value is not a String
     }
 
     public UUID extractMemberId(String token) {
         Claims claims = extractAllClaims(token);
-        return UUID.fromString((String) claims.get("memberId"));
+        Object memberId = claims.get("memberId");
+        if (memberId instanceof String) {
+            return UUID.fromString((String) memberId);
+        }
+        throw new IllegalArgumentException("Invalid memberId in token");
     }
 
     public UUID extractMemberIdInternally() {
         Claims claims = extractAllClaims(this.token);
-        return UUID.fromString((String) claims.get("memberId"));
+        Object memberId = claims.get("memberId");
+        if (memberId instanceof String) {
+            return UUID.fromString((String) memberId);
+        }
+        throw new IllegalArgumentException("Invalid memberId in token");
     }
 
     public String getToken() {
@@ -80,5 +96,4 @@ public class JWTUtil {
     public Boolean validateToken(String token) {
         return !isTokenExpired(token);
     }
-
 }
