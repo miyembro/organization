@@ -23,7 +23,8 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh './gradlew clean build -Dspring.profiles.active=build --info'
+                 sh 'echo "Active Profile: $spring.profiles.active"'
+                 sh './gradlew clean build -Dspring.profiles.active=build --info'
             }
         }
 
