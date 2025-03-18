@@ -94,7 +94,7 @@ public class OrganizationController {
             @PathVariable("organizationId") String organizationId,
             @RequestBody @Valid OrganizationRequest organizationRequest){
         OrganizationResponse updatedOrganizationResponse = organizationService.updateOrganization(organizationId, organizationRequest);
-        return new ResponseEntity(updatedOrganizationResponse, HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(updatedOrganizationResponse, HttpStatus.ACCEPTED);
     }
 
     @PostMapping(path="/{organizationId}/photo", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
