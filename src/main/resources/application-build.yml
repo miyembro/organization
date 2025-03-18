@@ -4,12 +4,13 @@ server:
   port: 8090
 
 
+
 application:
   config:
-    membership-type-url: http://gateway-service:8222/api/v1/membership-types
-    membership-url: http://gateway-service:8222/api/v1/memberships
-    member-url: http://gateway-service:8222/api/v1/members
-    role-url: http://gateway-service:8222/api/v1/roles
+    membership-type-url: http://localhost:8222/api/v1/membership-types
+    membership-url: http://localhost:8222/api/v1/memberships
+    member-url: http://localhost:8222/api/v1/members
+    role-url: http://localhost:8222/api/v1/roles
 
 aws:
   s3:
